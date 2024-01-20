@@ -1,6 +1,6 @@
 # Replication Package structure
 
-The following replication package contains all required materials to replicate *Two Approaches to Survival Analysis of Open Source Python Projects*.
+The following replication package contains all required materials to replicate master thesis *Survival Analysis and Contributor Attention Allocation in Open Source Python Projects*.
 Below the file structure of this replication package is described, all files can be found in **replication-package.zip**.
 
 ```
