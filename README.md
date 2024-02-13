@@ -10,7 +10,7 @@ Due to the size of the processed data (20G+), only code are shown here. If you a
 │
 ├── data-&-data-manipulation - All files pertaining to data, data collection and data manipulation
 │
-└── survival_analysis - All files pertaining to the survival analysis (KM and Cox) portion of the thesis
+└── survival-analysis - All files pertaining to the survival analysis (KM and Cox) portion of the thesis
 │
-├── relational event model - All files pertaining to the relational event model portion of the thesis
+├── relational-event-model - All files pertaining to the relational event model portion of the thesis
 ```
