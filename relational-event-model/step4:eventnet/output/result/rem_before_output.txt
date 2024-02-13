@@ -1,0 +1,25 @@
+Call:
+coxph(formula = my.surv ~ repetition + activity + popularity + 
+    clustering + strata(EVENT), data = events)
+
+  n= 33247633, number of events= 5760439 
+
+                coef exp(coef)  se(coef)      z Pr(>|z|)    
+repetition 1.597e-03 1.002e+00 2.770e-06 576.74   <2e-16 ***
+activity   1.983e-05 1.000e+00 9.590e-07  20.68   <2e-16 ***
+popularity 3.335e-05 1.000e+00 5.281e-08 631.45   <2e-16 ***
+clustering 2.599e-03 1.003e+00 9.505e-06 273.47   <2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+           exp(coef) exp(-coef) lower .95 upper .95
+repetition     1.002     0.9984     1.002     1.002
+activity       1.000     1.0000     1.000     1.000
+popularity     1.000     1.0000     1.000     1.000
+clustering     1.003     0.9974     1.003     1.003
+
+Concordance= 0.994  (se = 0 )
+Likelihood ratio test= 15333892  on 4 df,   p=<2e-16
+Wald test            = 806571  on 4 df,   p=<2e-16
+Score (logrank) test = 12141647  on 4 df,   p=<2e-16
+
