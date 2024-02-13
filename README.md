@@ -3,7 +3,7 @@
 The following replication package contains all the code to replicate master thesis *Survival Analysis and Contributor Attention Allocation in Open Source Python Projects*.<br />
 Below the file structure of this replication package is described.
 P.S.
-Due to the size of the processed data (20G+), only code are shown here. If you are interested a full archive with both code and data, contact the author by [email](xc.ecnu@gmail.com).
+Due to the size of the processed data (20G+), only code are shown here. Visit [Google Drive](https://drive.google.com/drive/folders/15HQMtST6tYOgtqTMiz3Qyw7ioFbniz_Q?usp=drive_link) to get a full archive with both code and data or contact the author by [email](xc.ecnu@gmail.com).
 ```
 .
 ├── README.md - A README file describing this replication package
