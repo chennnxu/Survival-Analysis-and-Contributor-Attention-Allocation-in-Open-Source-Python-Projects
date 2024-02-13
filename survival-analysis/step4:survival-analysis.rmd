@@ -1,0 +1,112 @@
+---
+title: "Survival Analysis using Kaplan-Meier method"
+output: html_document
+---
+## Load required packages
+
+```{r setup, warning=FALSE, message=FALSE,}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(cache = TRUE)
+#install.packages(c("survival"))
+library(survival)
+library(survminer)
+```
+
+## Data
+First lets read data from the data.csv file.
+```{r, warning=FALSE, message=FALSE}
+a_data <- read.csv('data/necessary_fields.csv', stringsAsFactors = TRUE)
+str(a_data)
+```
+```{r}
+a_data$censored = as.logical(a_data$censored)
+a_data$death_observed = as.logical(!a_data$censored)
+a_data$high_rev_freq = as.logical(a_data$high_rev_freq)
+a_data$high_author_count = as.logical(a_data$high_author_count)
+a_data$multi_repo = as.logical(a_data$multi_repo)
+str(a_data)
+```
+
+                     
+## Kaplan-Meier method
+The Kaplan-Meier method is the most common way to estimate survival times and probabilities. It is a non-parametric approach that results in a step function, where there is a step down each time an event occurs.
+
+The Surv function from the survival package creates a survival object for use as the response in a model formula. There will be one entry for each subject that is the survival time, which is followed by a +. In other words, this is basically a compiled version of the duration and status columns that can be interpreted by the survfit function. A + behind survival times indicates censored data points.
+
+```{r, warning=FALSE, message=FALSE}
+surv_object <- Surv(time = a_data$duration_months, event = a_data$death_observed)
+```
+
+The survfit function creates survival curves based on a formula. The next step is to fit the Kaplan-Meier curves. we can easily do that by passing the surv_object to the survfit function. Let’s generate the overall survival curve for the entire cohort, assign it to object fit1 
+
+```{r}
+# colorblind palette
+threePalette <- c("#009E73", "#0072B2", "#D55E00")
+twoPalette <- c("#0072B2", "#D55E00")
+```
+
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fit1 <- survfit(surv_object ~ 1, data = a_data)
+summary(fit1)
+
+ggsurvplot(fit1, data = a_data, pval = TRUE, conf.int = TRUE)
+```
+
+
+
+Next, lets stratify the curve depending on the host types
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fit3 <- survfit(surv_object ~ host_type, data = a_data)
+summary(fit3)
+ggsurvplot(fit3, data = a_data, pval = TRUE, conf.int = TRUE, palette=threePalette, xlab="Time (Months)", legend.labs=c("host type=Debian", "host type=Git","host type=Pypi"))
+```
+
+
+
+Now. lets stratify the curve depending if the projects had multiple repositories
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fit4 <- survfit(surv_object ~ multi_repo, data = a_data)
+summary(fit4)
+ggsurvplot(fit4, data = a_data, pval = TRUE, conf.int = TRUE, xlab="Time (Months)", legend.labs=c("multi repositories=No", "multi repositories=Yes"), palette=twoPalette)
+```
+
+
+at last, lets stratify the curve depending on the author count
+```{r, warning=FALSE, message=FALSE, results='hide'}
+fit5 <- survfit(surv_object ~ high_author_count, data = a_data)
+summary(fit5)
+ggsurvplot(fit5, data = a_data, pval = TRUE, conf.int = TRUE, legend.labs = c("author count <= 20", "author count > 20"), xlab="Time (Months)", palette=twoPalette)
+```
+lets stratify the curve by revision frequency (high is defined as greater than 1 revision a day)
+```{r, warning=FALSE, message=FALSE, results='hide'}
+Palette <- c("#D55E00", "#0072B2")
+fit6 <- survfit(surv_object ~ high_rev_freq, data = a_data)
+summary(fit6)
+ggsurvplot(fit6, data = a_data, pval = TRUE, conf.int = TRUE, legend.labs = c("rev. per day <= 1", "rev. per day > 1"), xlab="Time (Months)", palette=Palette)
+```
+Clearly there were a lot of projects with a large number of commits in a short period of time (as seen by the sudden drop in the blue curve) which skew the results here, but you can imagine the blue curve being lifted up that distance when removing such projects.
+
+# Fit a Cox proportional hazards model
+
+hazard function h(t). It describes the probability of an event or its hazard if the subject survived up to that particular time point (t).  It measures the instantaneous risk of death. We need the hazard function to consider covariates when we compare survival of the projects. cox proportional hazards models allow ua to include covariates. We can build Cox proportional hazards models using the coxph function and visualize them using the ggforest.
+
+
+```{r}
+
+a_data$high_rev_freq = as.factor(a_data$high_rev_freq)
+a_data$high_author_count = as.factor(a_data$high_author_count)
+a_data$multi_repo = as.factor(a_data$multi_repo)
+
+a_data$multi_repo = relevel(a_data$multi_repo, ref = "TRUE")
+a_data$high_author_count = relevel(a_data$high_author_count, ref = "TRUE")
+a_data$host_type = relevel(a_data$host_type, ref = "git")
+a_data$high_rev_freq = relevel(a_data$high_rev_freq, ref = "TRUE")
+
+fit.coxph <- coxph(surv_object ~  multi_repo + high_author_count + host_type + high_rev_freq, data = a_data)
+
+ggforest(fit.coxph, data = a_data, fontsize=0.9)
+```
+
+Lets see the results, breifly an HR > 1 indicates an increased risk of death and An HR < 1, on the other hand, indicates a decreased risk.
+
+
