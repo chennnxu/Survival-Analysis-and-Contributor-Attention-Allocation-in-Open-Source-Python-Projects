@@ -1,10 +1,9 @@
 # Replication Package structure
 
-The following replication package contains all the code to replicate master thesis <br />
-*Survival Analysis and Contributor Attention Allocation in Open Source Python Projects*.<br />
-Below the file structure of this replication package is described.<br />
+The following replication package contains all the code to replicate master thesis *Survival Analysis and Contributor Attention Allocation in Open Source Python Projects*.<br />
+Below the file structure of this replication package is described.
 P.S.
-Due to the size of the processed data (20G+), only code are shown here. If you are interested a full archive with both code and data, contact the author by [email](xc.ecnu@gmai.com).
+Due to the size of the processed data (20G+), only code are shown here. If you are interested a full archive with both code and data, contact the author by [email](xc.ecnu@gmail.com).
 ```
 .
 ├── README.md - A README file describing this replication package
